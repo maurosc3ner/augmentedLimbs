@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project(arucoTest)
+SET(CMAKE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/cmake/ )
+find_package(aruco REQUIRED )
+FIND_PACKAGE( OpenCV REQUIRED )
+add_executable(arucoTest arucoTest.cpp)
+target_link_libraries(arucoTest  ${aruco_LIBS})
