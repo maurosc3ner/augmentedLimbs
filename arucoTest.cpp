@@ -1,8 +1,16 @@
+/*
+*
+* HowTo: cd ..\..\opencvProjects\arucoTest1\build\Debug
+* arucoTest live c:\aruco-1.2.5\build\testdata\highCalib.yml 0.1
+*/
 
-#include <iostream>
 
+
+
+#include "server.h"
 #include <fstream>
 #include <sstream>
+//OpenGL and freeglut
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -10,9 +18,16 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #endif
+//OpenCV
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+//aruco
 #include <aruco/aruco.h>
+//sockets
+//#include <WinSock2.h>
+//#pragma comment(lib, "ws2_32.lib")
+
+using namespace std;
 using namespace cv;
 using namespace aruco;
 
@@ -28,19 +43,10 @@ enum{TORSO=0, LUA, LLA, RUA, RLA, LUL, LLL, RUL, RLL, DANCE, QUIT};
 #define HEAD_HEIGHT 3.0
 #define HEAD_RADIUS 1.0
 
-#define TORSO_HEIGHT 5.0
-#define TORSO_RADIUS 1.0
-
 #define UPPER_ARM_HEIGHT 0.2
 #define LOWER_ARM_HEIGHT 2.0
 #define UPPER_ARM_RADIUS  0.5
 #define LOWER_ARM_RADIUS  0.5
-
-#define UPPER_LEG_HEIGHT 3.0
-#define LOWER_LEG_HEIGHT 2.0
-#define UPPER_LEG_RADIUS  0.5
-#define LOWER_LEG_RADIUS  0.5
-
 
 /* Structure to define the state of the mouse */
 typedef struct
@@ -83,11 +89,10 @@ static GLfloat center[2] = {0,0};
 static GLint angle = 0; /* initially, TORSO */
 /* Dance mode or not? */
 bool dance = false;
-
 bool isPulse= false;
 
 
-
+///opencv & aruco
 string TheInputVideo;
 string TheIntrinsicFile;
 bool The3DInfoAvailable=false;
@@ -96,12 +101,13 @@ MarkerDetector PPDetector;
 VideoCapture TheVideoCapturer;
 vector<Marker> TheMarkers;
 Mat TheInputImage,TheUndInputImage,TheResizedImage,FlippedImage;
-
 CameraParameters TheCameraParams;
 Size TheGlWindowSize;
 bool TheCaptureFlag=true;
 bool readIntrinsicFile(string TheIntrinsicFile,Mat & TheIntriscCameraMatrix,Mat &TheDistorsionCameraParams,Size size);
 
+
+//methods
 void vDrawScene();
 void vIdle();
 void vResize( GLsizei iWidth, GLsizei iHeight );
@@ -112,17 +118,17 @@ void DrawRobot( float x, float y,
                 float lua, float lla, float rua, float rla, 
                 float lul, float lll, float rul, float rll );
 void InitQuadrics();
-
 void codo();
 void brazo();
 void antebrazo();
+
+
 /************************************
  *
  *
  *
  *
  ************************************/
-
 bool readArguments ( int argc,char **argv )
 {
     if (argc!=4) {
@@ -148,6 +154,22 @@ bool readArguments ( int argc,char **argv )
 
 int main(int argc,char **argv)
 {
+
+	/* start communication */
+		
+	if(initServer()==-1){
+		fprintf(stderr, "Error creating server\n");
+	}
+		int xThread;
+		pthread_t idHilo_EMF;
+		
+		/* create a second thread which executes inc_x(&x) */
+		if(pthread_create(&idHilo_EMF,NULL,listenEMF,&xThread)) {
+			fprintf(stderr, "Error creating thread\n");
+			return 1;
+		}else{
+			printf( "thread correctly created\n");
+		}
     try
     {//parse arguments
         if (readArguments (argc,argv)==false) return 0;
@@ -199,11 +221,7 @@ int main(int argc,char **argv)
 }
 /************************************
  *
- *
- *
- *
  ************************************/
-
 void vMouse(int b,int s,int x,int y)
 {
     if (b==GLUT_LEFT_BUTTON && s==GLUT_DOWN) {
@@ -211,7 +229,6 @@ void vMouse(int b,int s,int x,int y)
     }
 
 }
-
 
 /*
  * An idle event is generated when no other event occurs.
@@ -230,7 +247,6 @@ void vPulse(int d) {
 	}
   glutPostRedisplay();
 }
-
 
 /*
  * A keyboard event occurs when the user presses a key:
@@ -264,9 +280,6 @@ void Keyboard(unsigned char key, int x, int y) {
 
 /************************************
  *
- *
- *
- *
  ************************************/
 void axis(float size)
 {
@@ -294,9 +307,6 @@ void axis(float size)
 
 }
 /************************************
- *
- *
- *
  *
  ************************************/
 void vDrawScene()
@@ -356,11 +366,7 @@ void vDrawScene()
 
 }
 
-
 /************************************
- *
- *
- *
  *
  ************************************/
 void vIdle()
@@ -387,11 +393,7 @@ void vIdle()
     glutPostRedisplay();
 }
 
-
 /************************************
- *
- *
- *
  *
  ************************************/
 void vResize( GLsizei iWidth, GLsizei iHeight )
