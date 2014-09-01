@@ -43,7 +43,7 @@ enum{TORSO=0, LUA, LLA, RUA, RLA, LUL, LLL, RUL, RLL, DANCE, QUIT};
 #define HEAD_HEIGHT 3.0
 #define HEAD_RADIUS 1.0
 
-#define UPPER_ARM_HEIGHT 0.2
+#define UPPER_ARM_HEIGHT 0.1
 #define LOWER_ARM_HEIGHT 2.0
 #define UPPER_ARM_RADIUS  0.5
 #define LOWER_ARM_RADIUS  0.5
@@ -355,7 +355,7 @@ void vDrawScene()
 		}
 		
         //glColor3f(0.86,0.78,0.7);
-        glTranslatef(0, -TheMarkerSize, 0);
+		glTranslatef(0, -UPPER_ARM_HEIGHT, 0);
 
 		DrawRobot( 0, 0, 
 	       theta[LUA], theta[LLA], theta[RUA], theta[RLA], 
@@ -415,11 +415,11 @@ void vResize( GLsizei iWidth, GLsizei iHeight )
 void InitQuadrics()
 {
     lua = gluNewQuadric();
-	gluQuadricDrawStyle(lua, GLU_FILL);
+	gluQuadricDrawStyle(lua, GLU_LINE);
 	h = gluNewQuadric();
-	gluQuadricDrawStyle(h, GLU_FILL);
+	gluQuadricDrawStyle(h, GLU_LINE);
 	lla = gluNewQuadric();
-	gluQuadricDrawStyle(lla, GLU_FILL);
+	gluQuadricDrawStyle(lla, GLU_LINE);
 	/* Insert code here */
 }
 
@@ -430,9 +430,9 @@ void DrawRobot( float x, float y,
 
 	brazo();
 	glPushMatrix();
-    glTranslatef(0, UPPER_ARM_HEIGHT+TheMarkerSize/4, 0);
+    glTranslatef(0, 2*UPPER_ARM_HEIGHT+UPPER_ARM_HEIGHT/4, 0);
     codo();
-	glTranslatef(0, TheMarkerSize/4, 0);
+	glTranslatef(0, UPPER_ARM_HEIGHT/4, 0);
 	glRotatef(lla, 1, 0, 0);
 	antebrazo();
 	glPopMatrix();
@@ -442,14 +442,14 @@ void brazo()
 {
    	glPushMatrix();
    	glRotatef(-90.0, 1.0, 0.0, 0.0);
-   	gluCylinder(lua,TheMarkerSize/2, TheMarkerSize/2, TheMarkerSize*2,20,20);
+	gluCylinder(lua,UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT*2,40,40);
    	glPopMatrix();
 }
 
 void codo() {
   glPushMatrix();
   //glScalef(TheMarkerSize/2, TheMarkerSize / 2, TheMarkerSize/2);
-  gluSphere(h, TheMarkerSize/2, 20, 20);
+  gluSphere(h, UPPER_ARM_HEIGHT/2, 20, 20);
   glPopMatrix();
 }
 
@@ -458,7 +458,7 @@ void antebrazo()
 	glPushMatrix();
 	glRotatef(-90, 1, 0, 0); //perpendicular a brazo
 	//glRotatef(-0, 1, 0, 0);
-	gluCylinder(lla, TheMarkerSize/2, TheMarkerSize/3, TheMarkerSize*2, 10,
-              10);
+	gluCylinder(lla, UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT/3, UPPER_ARM_HEIGHT*2, 40,
+              40);
 	glPopMatrix();
 }
