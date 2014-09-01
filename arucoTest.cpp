@@ -4,10 +4,7 @@
 * arucoTest live c:\aruco-1.2.5\build\testdata\highCalib.yml 0.1
 */
 
-
-
-
-#include "server.h"
+#include "Server.h"
 #include <fstream>
 #include <sstream>
 //OpenGL and freeglut
@@ -106,6 +103,7 @@ Size TheGlWindowSize;
 bool TheCaptureFlag=true;
 bool readIntrinsicFile(string TheIntrinsicFile,Mat & TheIntriscCameraMatrix,Mat &TheDistorsionCameraParams,Size size);
 
+Server *localServer;
 
 //methods
 void vDrawScene();
@@ -145,31 +143,27 @@ bool readArguments ( int argc,char **argv )
 
 /************************************
  *
- *
- *
- *
  ************************************/
-
-
-
 int main(int argc,char **argv)
 {
+	
+	localServer=new Server(100,2,512);
 
 	/* start communication */
 		
-	if(initServer()==-1){
+	if(localServer->initServer()==-1){
 		fprintf(stderr, "Error creating server\n");
 	}
 		int xThread;
 		pthread_t idHilo_EMF;
 		
-		/* create a second thread which executes inc_x(&x) */
+		/* create a second thread which executes inc_x(&x) 
 		if(pthread_create(&idHilo_EMF,NULL,listenEMF,&xThread)) {
 			fprintf(stderr, "Error creating thread\n");
 			return 1;
 		}else{
 			printf( "thread correctly created\n");
-		}
+		}*/
     try
     {//parse arguments
         if (readArguments (argc,argv)==false) return 0;
@@ -278,6 +272,26 @@ void Keyboard(unsigned char key, int x, int y) {
   glutPostRedisplay();
 }
 
+/*
+ *
+ */
+void processMsg(string msg) {
+	if (msg.compare("flexion"){
+		if ( theta[LLA]<=110){
+			theta[LLA] += 5;
+		}
+	} else if (msg.compare("relajacion"){
+		if ( theta[LLA]>=0){
+			theta[LLA] -= 5;
+		}
+	} else{
+		exit(0);
+	}
+
+  
+  glutPostRedisplay();
+}
+
 /************************************
  *
  ************************************/
@@ -356,7 +370,7 @@ void vDrawScene()
 		
         //glColor3f(0.86,0.78,0.7);
 		glTranslatef(0, -UPPER_ARM_HEIGHT, 0);
-
+		localServer->getMessage();
 		DrawRobot( 0, 0, 
 	       theta[LUA], theta[LLA], theta[RUA], theta[RLA], 
                theta[LUL], theta[LLL], theta[RUL], theta[RLL] );

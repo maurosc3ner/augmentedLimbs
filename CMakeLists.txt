@@ -4,8 +4,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/cmake/ )
 set(HEADERS
    server.h
 )
-set(SOURCE 
+set(SOURCES 
    arucoTest.cpp
+   server.cpp
 )
 find_package(aruco REQUIRED )
 FIND_PACKAGE( OpenCV REQUIRED )
@@ -15,5 +16,5 @@ FIND_LIBRARY(${LIMBS}/lib pthreadVCE2)
 
 set(LIMBS_ALL ${LIMBS_ALL} ${aruco_LIBS} pthreadVCE2)
 
-add_executable(arucoTest ${SOURCE} ${HEADERS})
+add_executable(arucoTest ${SOURCES} ${HEADERS})
 target_link_libraries(arucoTest ${LIMBS_ALL})
