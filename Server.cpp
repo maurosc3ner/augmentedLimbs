@@ -45,7 +45,8 @@ int Server::initServer()
 	return 0;
 }
 
-void Server::listenEMF()
+
+void Server::InternalThreadEntry()
 {
 	printf("inicio pthread de accept() \n");
 
@@ -70,10 +71,10 @@ void Server::listenEMF()
 					break;
 				}
 				buf[n_rcv]='\0';
-				fprintf(stderr,"Cliente envio: %s\n",buf);
+				//fprintf(stderr,"Cliente envio: %s\n",buf);
 				msg=string(buf);
 				
-				fprintf(stderr," %d \n",n_rcv); 
+				//fprintf(stderr," %d \n",n_rcv); 
 			}
 		}
 		closesocket(fd2);

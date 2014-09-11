@@ -78,7 +78,7 @@ GLUquadricObj	*t, *h,	/* torso and head */
 */
 
 /* initial joint angles */
-static GLfloat theta[QUIT] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0}; 
+static GLfloat theta[QUIT] = {0.0,-90.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0}; 
 
 /* torso position */
 static GLfloat center[2] = {0,0};
@@ -155,10 +155,11 @@ int main(int argc,char **argv)
 		fprintf(stderr, "Error creating server\n");
 	}
 		int xThread;
-		pthread_t idHilo_EMF;
+		//pthread_t idHilo_EMF;
 		
+		localServer->StartInternalThread();
 		/* create a second thread which executes inc_x(&x) 
-		if(pthread_create(&idHilo_EMF,NULL,listenEMF,&xThread)) {
+		if(pthread_create(&idHilo_EMF,NULL,localServer->listenEMF,NULL)) {
 			fprintf(stderr, "Error creating thread\n");
 			return 1;
 		}else{
@@ -276,18 +277,20 @@ void Keyboard(unsigned char key, int x, int y) {
  *
  */
 void processMsg(string msg) {
-	if (msg.compare("flexion"){
+	std::cout<<"arm state:"<<msg<<endl;
+	
+	if (msg.compare("relajacion")){
 		if ( theta[LLA]<=110){
-			theta[LLA] += 5;
+			theta[LLA] += 1;
 		}
-	} else if (msg.compare("relajacion"){
+	} else if (msg.compare("flexion")){
 		if ( theta[LLA]>=0){
-			theta[LLA] -= 5;
+			theta[LLA] -= 1;
 		}
 	} else{
 		exit(0);
 	}
-
+	
   
   glutPostRedisplay();
 }
@@ -350,7 +353,9 @@ void vDrawScene()
 
 	//articulated arm allocation
 	InitQuadrics();
+	//std::cout<<localServer->getMessage()<<std::endl;
 
+	processMsg(localServer->getMessage());
     //now, for each marker,
     double modelview_matrix[16];
     for (unsigned int m=0;m<TheMarkers.size();m++)
@@ -369,8 +374,9 @@ void vDrawScene()
 		}
 		
         //glColor3f(0.86,0.78,0.7);
-		glTranslatef(0, -UPPER_ARM_HEIGHT, 0);
-		localServer->getMessage();
+		//glTranslatef(0, -UPPER_ARM_HEIGHT, 0);
+		glRotatef(theta[LUA], 1.0, 0.0, 0.0); // roto el mundo antes de hacer push matrix
+		
 		DrawRobot( 0, 0, 
 	       theta[LUA], theta[LLA], theta[RUA], theta[RLA], 
                theta[LUL], theta[LLL], theta[RUL], theta[RLL] );
@@ -439,40 +445,41 @@ void InitQuadrics()
 
 void DrawRobot( float x, float y, 
                 float lua, float lla, float rua, float rla, 
-                float lul, float lll, float rul, float rll )
+                float lul, float lll, float rul, float rll ) //change angle names
 {
 
 	brazo();
 	glPushMatrix();
-    glTranslatef(0, 2*UPPER_ARM_HEIGHT+UPPER_ARM_HEIGHT/4, 0);
+    glTranslatef(0, 0,2*UPPER_ARM_HEIGHT+UPPER_ARM_HEIGHT/4);
     codo();
-	glTranslatef(0, UPPER_ARM_HEIGHT/4, 0);
-	glRotatef(lla, 1, 0, 0);
+	glPushMatrix();
+	//glTranslatef(0, UPPER_ARM_HEIGHT/4, 0);
+	glRotatef(lla, 1, 0, 0);  //
 	antebrazo();
+	glPopMatrix();
 	glPopMatrix();
 }
 
 void brazo()
 {
-   	glPushMatrix();
-   	glRotatef(-90.0, 1.0, 0.0, 0.0);
-	gluCylinder(lua,UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT*2,40,40);
-   	glPopMatrix();
+   	//glPushMatrix();
+   	//glRotatef(-90.0, 1.0, 0.0, 0.0);
+	gluCylinder(lua,UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT*2,30,30);
+   	//glPopMatrix();
 }
 
 void codo() {
-  glPushMatrix();
+  //glPushMatrix();
   //glScalef(TheMarkerSize/2, TheMarkerSize / 2, TheMarkerSize/2);
   gluSphere(h, UPPER_ARM_HEIGHT/2, 20, 20);
-  glPopMatrix();
+  //glPopMatrix();
 }
 
 void antebrazo()
 {
-	glPushMatrix();
-	glRotatef(-90, 1, 0, 0); //perpendicular a brazo
-	//glRotatef(-0, 1, 0, 0);
-	gluCylinder(lla, UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT/3, UPPER_ARM_HEIGHT*2, 40,
-              40);
-	glPopMatrix();
+	//glPushMatrix();
+	//glRotatef(-90, 1, 0, 0); //perpendicular a brazo
+	gluCylinder(lla, UPPER_ARM_HEIGHT/2, UPPER_ARM_HEIGHT/3, UPPER_ARM_HEIGHT*2, 30,
+              30);
+	//glPopMatrix();
 }
