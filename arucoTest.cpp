@@ -468,6 +468,7 @@ void DrawRobot( float x, float y,
 			glPopMatrix();
 		glPopMatrix();
 	glPopMatrix();
+	glPopMatrix();
 }
 
 void brazo()
