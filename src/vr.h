@@ -4,16 +4,17 @@
 #include "Ogre.h"
 #include <OIS/OIS.h>
 
-
 #include <aruco/aruco.h>  
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
+
+#include "PulseDetector.h" 
 
 #include <pthread.h>
 #include <time.h>
-
 
 #include "Server.h"
 #include <fstream>
@@ -55,7 +56,7 @@ public:
 	Ogre::ColourValue origSI1Colour;	//color front texture
 	Ogre::ColourValue origSI2Colour;	//color back texture
 	Ogre::Timer _timer;					//timer
-	Ogre::Real heartRate;				//pulso cardiaco
+	
 	Ogre::Vector3 mDirection;			
 	Ogre::Real mRotate;
 	Ogre::Bone *bones[17];		//17 bones in the armature
@@ -65,6 +66,9 @@ public:
 	int currState;
 	string emf,oldState;
 	bool busy;
+
+	//heart monitoring
+	int bpm;
 protected:
 	void createFrameListener(void);
 	void setupArmature(void);

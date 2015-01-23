@@ -12,6 +12,7 @@ struct rotateWrapper {
 vr::vr(void)
 {
 	currState=12;
+	bpm=0;
 	
 	localServer=new Server(8080,2,512);
 	if(localServer->initServer()==-1){
@@ -584,31 +585,31 @@ bool vr::processUnbufferedInput(const Ogre::FrameEvent& evt)
 
 	//cout<<"event capture at listener"<<endl;
 	emf=localServer->getMessage();
-	
-	if(_timer.getMilliseconds() > 650 && _timer.getMilliseconds() < 720)
+								  //650
+	if(_timer.getMilliseconds() > bpm && _timer.getMilliseconds() < (bpm+70))
 	{ 
         frontSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(Ogre::ColourValue(1,origSI1Colour.g,origSI1Colour.b,origSI1Colour.a));
 		backSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(Ogre::ColourValue(1,origSI2Colour.g,origSI2Colour.b,origSI2Colour.a));
 	}
-	else if(_timer.getMilliseconds() > 720 && _timer.getMilliseconds() < 750)
+	else if(_timer.getMilliseconds() > (bpm+70) && _timer.getMilliseconds() < (bpm+110))
 	{
 		frontSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(origSI1Colour);
 		backSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(origSI2Colour);
 	
-	}
-	else if(_timer.getMilliseconds() > 750 && _timer.getMilliseconds() < 800)
+	}									
+	else if(_timer.getMilliseconds() > (bpm+110) && _timer.getMilliseconds() < (bpm+180))
 	{
 		frontSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(Ogre::ColourValue(1,origSI1Colour.g,origSI1Colour.b,origSI1Colour.a));
 		backSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(Ogre::ColourValue(1,origSI2Colour.g,origSI2Colour.b,origSI2Colour.a));
 		
-	}else if(_timer.getMilliseconds() > 800)
+	}else if(_timer.getMilliseconds() > (bpm+180))
 	{
 		frontSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(origSI1Colour);
 		backSkin->getBestTechnique(0)->getPass(0)->setSelfIllumination(origSI2Colour);
 		_timer.reset();
 	}
-	
-	cout<<"1. event capture at listener"<<emf.compare(oldState)<<" "<<emf<<oldState<<currState<<endl;
+	cout<<"1. Pulso: "<<bpm<<endl;
+	//cout<<"1. event capture at listener "<<emf.compare(oldState)<<" "<<emf<<oldState<<currState<<endl;
 	//if(emf.compare(oldState)!=0 && currState==12)  //use this with communication enabled
 	if(currState==12)
 	{

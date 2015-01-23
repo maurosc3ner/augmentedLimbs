@@ -9,11 +9,13 @@ set(PROJECT_VERSION "0.0.3")
 set(HEADERS
    src/Server.h
    src/vr.h
+   src/PulseDetector.h
 )
 set(SOURCES 
    aruco_test_ogre.cpp
    src/Server.cpp
    src/vr.cpp
+   src/PulseDetector.cpp
 )
 
 
@@ -63,7 +65,13 @@ find_package(OIS REQUIRED)
 if(NOT OIS_FOUND)
 	message(SEND_ERROR "Failed to find OIS.")
 endif()
-set (REQUIRED_LIBRARIES ${OpenCV_LIBS}  ${aruco_LIBS} ${OGRE_LIBRARY} ${OIS_LIBRARY} ${Boost_LIBRARIES})
+
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake) 
+FIND_PACKAGE(GSL REQUIRED)
+include_directories(${GSL_INCLUDE_DIRS} ${GSLCBLAS_INCLUDE_DIRS})
+
+#collect all libraries
+set (REQUIRED_LIBRARIES ${OpenCV_LIBS}  ${aruco_LIBS} ${OGRE_LIBRARY} ${OIS_LIBRARY} ${Boost_LIBRARIES} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES})
 
 include_directories (${OGRE_INCLUDE_DIRS})
 
@@ -84,7 +92,7 @@ configure_file(data/plugins.cfg plugins.cfg COPYONLY)
 configure_file(data/ogre.cfg ogre.cfg COPYONLY)
 #configure_file(data/Sinbad.zip Sinbad.zip COPYONLY)
 configure_file(data/male_body.zip male_body.zip COPYONLY)
-
+configure_file(data/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
 
 
 

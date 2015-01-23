@@ -46,13 +46,15 @@ int main(int argc, char** argv)
 {
 
     cout<<" INIT "<<endl;
+    
     /// READ PARAMETERS
     if(!readParameters(argc, argv))
     return false;
 	
 	vr *app;
 	app=new vr();
-	
+	PulseDetector *heartMonitor;
+	heartMonitor=new PulseDetector();
 	///aruco
 	//TheMarkerDetector.setDesiredSpeed(3);
 	
@@ -100,6 +102,9 @@ int main(int argc, char** argv)
     CameraParamsUnd.Distorsion=cv::Mat::zeros(4,1,CV_32F);
     cout<<" CREATE UNDISTORTED CAMERA PARAMS "<<endl;
     
+    /// HEART MONITORING
+    cv::Mat frameGreyscale, daGrayFace , scaleddaGrayFace;
+    
     /// CAPTURE FIRST FRAME
     TheVideoCapturer.grab();
     TheVideoCapturer.retrieve ( TheInputImage );
@@ -118,6 +123,12 @@ int main(int argc, char** argv)
         TheVideoCapturer.retrieve ( TheInputImage );
         cv::flip(TheInputImage, FlippedImage, 1);
         cv::undistort(FlippedImage,TheInputImageUnd,CameraParams.CameraMatrix,CameraParams.Distorsion);
+        
+        ///Heart Montoring
+        double currBPM=heartMonitor->detect(TheInputImageUnd);
+        
+        cout<<"before bpm: "<<currBPM<<endl;
+        app->bpm=(int((60/currBPM)*1000));
         
         ///Predict
         cv::Mat predictPos = kfPos.predict();
