@@ -7,13 +7,13 @@ PROJECT(aruco_ogre_test)
 set(PROJECT_VERSION "0.0.3")
 
 set(HEADERS
-   Server.h
-   vr.h
+   src/Server.h
+   src/vr.h
 )
 set(SOURCES 
    aruco_test_ogre.cpp
-   Server.cpp
-   vr.cpp
+   src/Server.cpp
+   src/vr.cpp
 )
 
 
@@ -74,15 +74,15 @@ include_directories (${OGRE_INCLUDE_DIRS})
 
 #add_executable (aruco_test_ogre aruco_test_ogre.cpp)
 add_executable (aruco_test_ogre ${SOURCES} ${HEADERS})
-add_executable (aruco_test_board_ogre aruco_test_board_ogre.cpp)
-add_executable (aruco_test_board_ogre_mask aruco_test_board_ogre_mask.cpp)
+#add_executable (aruco_test_board_ogre aruco_test_board_ogre.cpp)
+#add_executable (aruco_test_board_ogre_mask aruco_test_board_ogre_mask.cpp)
 target_link_libraries(aruco_test_ogre ${REQUIRED_LIBRARIES})
-target_link_libraries(aruco_test_board_ogre ${REQUIRED_LIBRARIES})
-target_link_libraries(aruco_test_board_ogre_mask ${REQUIRED_LIBRARIES})
+#target_link_libraries(aruco_test_board_ogre ${REQUIRED_LIBRARIES})
+#target_link_libraries(aruco_test_board_ogre_mask ${REQUIRED_LIBRARIES})
 
 configure_file(data/plugins.cfg plugins.cfg COPYONLY)
 configure_file(data/ogre.cfg ogre.cfg COPYONLY)
-configure_file(data/Sinbad.zip Sinbad.zip COPYONLY)
+#configure_file(data/Sinbad.zip Sinbad.zip COPYONLY)
 configure_file(data/male_body.zip male_body.zip COPYONLY)
 
 
