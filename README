@@ -1,0 +1,56 @@
+Ogre3D version for ArUco
+
+1. INSTALLATION
+
+We have currently tested this project only in Linux. It should work in other environments
+It has been tested with ArUco 1.2.5 and Ogre 1.7.4, although it should work with other libraries versions too.
+
+Ogre installation:
+On Ubuntu 12.04, just install the packages:
+- sudo apt-get install libogre-dev libois-dev
+These are Ogre 1.7.4 and should work fine with this code.
+
+To install last version of Ogre3D:
+- add OGRE PPA with: sudo add-apt-repository ppa:ogre-team/ogre
+- update your package list with: sudo apt-get update
+- install libogre-dev package with: sudo apt-get install libogre-dev
+- install ogre samples media files (optional): sudo apt-get install ogre-samples-media ogre-samples-bin
+
+Compile using cmake ( cmake -DCMAKE_BUILD_TYPE=Release ; make )
+NOTES: 
+- To execute a sample you have to copy the files plugins.cfg and Sinbad.zip (and optinally ogre.cfg) to the same directory of the compiled executable. These files have been set to be copied automatically by CMake, but if you move or delete any of the files it will not execute.
+- plugins.cfg file contains the path to the  plugins RenderSystem_GL and Plugin_ParticleFX. It is configured for Ubuntu 12.04, if you are using another OS, you should probably modify the path inside the file to the corresponding path in your OS Ogre installation
+
+
+2. EXECUTING
+
+There are three sample applications, single marker version, board version and board mask version:
+ - aruco_test_ogre
+ - aruco_test_board_ogre
+ - aruco_test_board_ogre_mask
+
+You can test samples with the "testing" videos which come with aruco:
+
+./aruco_test_ogre .../aruco/testing/single/video.avi .../aruco/testing/single/intrinsics.yml 0.05
+./aruco_test_board_ogre .../aruco/testing/board/video.avi .../aruco/testing/board/intrinsics.yml .../aruco/testing/board/board_pix.yml 0.039
+./aruco_test_board_ogre_mask .../aruco/testing/board/video.avi .../aruco/testing/board/intrinsics.yml .../aruco/testing/board/board_pix.yml 0.039
+
+Once executed, configure your video parameters in the main windows, then press Accept. You will see dancing 'Sinbad' over markers / board. "Esc" exits program.
+
+You can also test with live video (if your camera is compatible with opencv).
+Just change the first parameter with the string "live" and adjust the other ones to your configuration.
+
+The mask test shows a demostration of use of an augmented reality occlusion mask with ArUco and Ogre. The mask is a trivial example that is composed just by the polygons of the detected markers
+
+Enjoy!
+
+3. AUTHORS
+
+Sergio Garrido-Jurado - i52gajus@uco.es
+Rafael Muñoz-Salinas - rmsalinas@uco.es
+
+*The file Sinbad.zip has been extracted from the OGRE project
+
+
+
+

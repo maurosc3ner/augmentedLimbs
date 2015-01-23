@@ -1,0 +1,3 @@
+VERSION 1.2.0
+- Simplification of ArUco-Ogre connections, now just including some simple test applications and removing the use of the Ogre FrameListenet. Now we use renderOneFrame() function.
+- The model Sinbad.zip has been added to the project to make sure it is found.
